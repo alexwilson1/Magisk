@@ -96,7 +96,7 @@ ssize_t xsendfile(int out_fd, int in_fd, off_t *offset, size_t count) {
     // Loop while there's still some data to send
     for (size_t size_to_send = count; size_to_send > 0; )
     {
-        ssize_t sent = sendfile(out_fd, in_fd, &offset, size_to_send);
+        ssize_t sent = sendfile(out_fd, in_fd, offset, size_to_send);
         
         if (sent < 0)
         {
