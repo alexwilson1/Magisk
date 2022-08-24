@@ -92,7 +92,7 @@ void *xmmap(void *addr, size_t length, int prot, int flags,
 }
 
 ssize_t xsendfile(int out_fd, int in_fd, off_t *offset, size_t count) {
-
+    ssize_t sent;
     // Loop while there's still some data to send
     for (size_t size_to_send = count; size_to_send > 0; )
     {
