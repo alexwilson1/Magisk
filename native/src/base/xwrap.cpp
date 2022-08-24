@@ -92,24 +92,25 @@ void *xmmap(void *addr, size_t length, int prot, int flags,
 }
 
 ssize_t xsendfile(int out_fd, int in_fd, off_t *offset, size_t count) {
-    ssize_t sent;
+
+    offset = 0; // put this here as dereferencing a nullptr is undefined and all usages are nullptr. TODO, remove.
+        
     // Loop while there's still some data to send
     for (size_t size_to_send = count; size_to_send > 0; )
     {
         ssize_t sent = sendfile(out_fd, in_fd, offset, size_to_send);
-
+        
         if (sent <= 0)
         {
             // Error or end of file
             if (sent != 0)
                 PLOGE("sendfile");  // Was an error, report it
-            break;
+            return sent;
         }
 
         size_to_send -= sent;  // Decrease the length to send by the amount actually sent
+        offset += sent;
     }
-
-    return sent;
 }
 
 int xpoll(struct pollfd *fds, nfds_t nfds, int timeout) {
