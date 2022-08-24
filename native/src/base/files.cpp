@@ -6,6 +6,7 @@
 
 #include <base.hpp>
 #include <selinux.hpp>
+#include <fstream>
 
 using namespace std;
 
