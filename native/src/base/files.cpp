@@ -142,26 +142,26 @@ void mv_dir(int src, int dest) {
     }
 }
 
-void cp_afc(const char *src, const char *dest) {
+void cp_afc(const char *source, const char *destination) {
     file_attr a;
-    getattr(src, &a);
+    getattr(source, &a);
 
     if (S_ISDIR(a.st.st_mode)) {
-        xmkdirs(dest, 0);
-        clone_dir(xopen(src, O_RDONLY | O_CLOEXEC), xopen(dest, O_RDONLY | O_CLOEXEC));
+        xmkdirs(destination, 0);
+        clone_dir(xopen(source, O_RDONLY | O_CLOEXEC), xopen(destination, O_RDONLY | O_CLOEXEC));
     } else{
-        unlink(dest);
+        unlink(destination);
         if (S_ISREG(a.st.st_mode)) {
-            ifstream  src(src,  ios::binary);
-            ofstream  dst(dest, ios::binary);
+            ifstream  src(source,  ios::binary);
+            ofstream  dst(destination, ios::binary);
             dst << src.rdbuf();
         } else if (S_ISLNK(a.st.st_mode)) {
             char buf[4096];
-            xreadlink(src, buf, sizeof(buf));
-            xsymlink(buf, dest);
+            xreadlink(source, buf, sizeof(buf));
+            xsymlink(buf, destination);
         }
     }
-    setattr(dest, &a);
+    setattr(destination, &a);
 }
 
 void clone_dir(int src, int dest) {
