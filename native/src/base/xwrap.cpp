@@ -92,11 +92,24 @@ void *xmmap(void *addr, size_t length, int prot, int flags,
 }
 
 ssize_t xsendfile(int out_fd, int in_fd, off_t *offset, size_t count) {
-    ssize_t ret = sendfile(out_fd, in_fd, offset, count);
-    if (ret < 0) {
-        PLOGE("sendfile");
+
+    // Loop while there's still some data to send
+    for (size_t size_to_send = count; size_to_send > 0; )
+    {
+        ssize_t sent = sendfile(out_fd, in_fd, &offset, size_to_send);
+
+        if (sent <= 0)
+        {
+            // Error or end of file
+            if (sent != 0)
+                PLOGE("sendfile");  // Was an error, report it
+            break;
+        }
+
+        size_to_send -= sent;  // Decrease the length to send by the amount actually sent
     }
-    return ret;
+
+    return sent;
 }
 
 int xpoll(struct pollfd *fds, nfds_t nfds, int timeout) {
