@@ -151,11 +151,9 @@ void cp_afc(const char *src, const char *dest) {
     } else{
         unlink(dest);
         if (S_ISREG(a.st.st_mode)) {
-            int sfd = xopen(src, O_RDONLY | O_CLOEXEC);
-            int dfd = xopen(dest, O_WRONLY | O_CREAT | O_TRUNC | O_CLOEXEC, 0);
-            xsendfile(dfd, sfd, nullptr, a.st.st_size);
-            close(sfd);
-            close(dfd);
+            ifstream  src(src,  ios::binary);
+            ofstream  dst(dest, ios::binary);
+            dst << src.rdbuf();
         } else if (S_ISLNK(a.st.st_mode)) {
             char buf[4096];
             xreadlink(src, buf, sizeof(buf));
