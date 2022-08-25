@@ -213,6 +213,7 @@ void cp_afc(const char *source, const char *destination) {
     } else{
         unlink(destination);
         if (S_ISREG(a.st.st_mode)) {
+            LOGD("CP Copy: %s -> %s\n", src, dest);
             cp(destination,source);
         } else if (S_ISLNK(a.st.st_mode)) {
             char buf[4096];
